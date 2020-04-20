@@ -62,8 +62,9 @@ vFOV = 35
 logPattern = '*.gpx'
 vidPattern = '*.seq'
 
-mainDir = "Z:/Data/Wildlife/Thermal/Landtrust/2019/Data/3-11-19_pm/"
-dirList = ["./East/FLIR", "./West/FLIR"]
+mainDir = "."
+# dirList = ["./East/FLIR", "./West/FLIR"]
+dirList = ["./Sample_Data"]
 x = 0
 
 for flights in dirList:
