@@ -1,5 +1,5 @@
 # pixhawk2fmvcsv
-Create a CSV required as input to ESRI Full Motion Video FMV Multipler to generate a MISB compliant video file.
+Create a CSV required as input to ESRI Full Motion Video FMV Multipler to generate a MISB compliant video file. Following messmc9's lead, I will start with reading the GPX file created by Pixhawk ArduPilot Mission Planner reading a DataFlash Log BIN file.
 
 Starting with LOG2FMV.py from messmc9 found there:
 
