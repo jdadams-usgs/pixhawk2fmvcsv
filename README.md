@@ -7,4 +7,7 @@ Starting with LOG2FMV.py from messmc9 found there:
 
 2020-04-20
 
-I and pretty newbie to Python coding. I am starting with an Anaconda 3 environment and Python interpreter 3.7.7.
+I am pretty newbie to Python coding. I am starting with an Anaconda 3 environment and Python interpreter 3.7.7. Please be gentle if what you see here does not make sense. Thank you.
+
+Joe Adams
+jdadams@usgs.gov
