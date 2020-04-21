@@ -3,7 +3,7 @@ import os
 import fnmatch
 import xml.etree.ElementTree as ET
 import subprocess
-import flirpy.io.seq
+# import flirpy.io.seq
 from tkinter import filedialog
 from tkinter import *
 import glob
@@ -60,27 +60,34 @@ hFOV = 45
 vFOV = 35
 
 logPattern = '*.gpx'
-vidPattern = '*.seq'
 
 mainDir = "."
 # dirList = ["./East/FLIR", "./West/FLIR"]
 dirList = ["./Sample_Data"]
 x = 0
 
+print( 'UNIX Time Stamp,\
+SensorLatitude,\
+SensorLongitude,\
+SensorAltitude,\
+PlatformHeading,\
+PlatformRoll,\
+PlatformPitch,\
+SensorRelativeRoll,\
+SensorRelativeElevation,\
+SensorRelativeAzimuth,\
+HorizontalFOV,\
+VerticalFOV' )
+
 for flights in dirList:
     os.chdir(mainDir)
     os.chdir(dirList[x])
-    print(os.getcwd())
+    # print(os.getcwd() + '\n')
     fileList = os.listdir('.')
     # os.mkdir('./output')
     # Find the number of video files so we can create a list of appropriate length
-    i = 0
-    for entry in fileList:
-        if fnmatch.fnmatch(entry, vidPattern):
-            i = i + 1
 
     logFileName = 'null'
-    vidFile = [[0 for y in range(4)] for z in range(int(i))]
 
     i = 0
 
@@ -88,29 +95,8 @@ for flights in dirList:
     for entry in fileList:
         if fnmatch.fnmatch(entry, logPattern):
             logFileName = entry
-        elif fnmatch.fnmatch(entry, vidPattern):
-            vidFile[i][0] = entry
-
-            # print("Splitting SEQ file...")
-            # splitter = flirpy.io.seq.splitter("./")
-            # splitter.process(entry)
-
-            # vidFile[i][1] = round(output_avi(vidFile[i][0][0:18]))
-            # print("Cleaning up...")
-            # shutil.rmtree("./" + vidFile[i][0][0:18], ignore_errors=TRUE)
-
-            vidFile[i][1] = round(get_duration('./output/' + vidFile[i][0][0:18] + '.mp4'))
-
-            ye = int(vidFile[i][0][0:4])  # Read in each data value to its own variable, maybe a list would be more elegant. Known limitation: When we reach the year 10,000 this will break. I pity the poor sap who is counting deer in 8,000 years
-            mo = int(vidFile[i][0][4:6])
-            da = int(vidFile[i][0][6:8])
-            ho = int(vidFile[i][0][9:11])
-            mi = int(vidFile[i][0][11:13])
-            se = int(vidFile[i][0][13:15])
-            vDT = datetime.datetime(ye, mo, da, ho, mi, se)  # Reformat into a date time format and write that shit into a new variable
-            vidFile[i][2] = 1000000*int(vDT.timestamp())  # Re-reformat into UNIX epoch microseconds and write that shit into an even newer variable
-            vidFile[i][3] = int(vidFile[i][2] + (vidFile[i][1])*1000000)
-            i = i + 1
+        else:
+            continue
 
     # create element tree object
     tree = ET.parse(logFileName)
@@ -120,6 +106,7 @@ for flights in dirList:
 
     # Create table to hold telemetry data
     trkpts = [[0 for y in range(8)] for z in range(1 + len(root.findall('./{http://www.topografix.com/GPX/1/1}trk/{http://www.topografix.com/GPX/1/1}trkseg/{http://www.topografix.com/GPX/1/1}trkpt')))]
+
     i = 0
 
     for items in root.findall('./{http://www.topografix.com/GPX/1/1}trk/{http://www.topografix.com/GPX/1/1}trkseg/{http://www.topografix.com/GPX/1/1}trkpt'):
@@ -138,10 +125,21 @@ for flights in dirList:
         se = int(trkpts[i][0][17:19])
         tDT = datetime.datetime(ye, mo, da, ho, mi,se)  # Reformat into a date time format and write that shit into a new variable
         trkpts[i][7] = int(1000000 * int(tDT.timestamp())) # + timeOffset  # Re-reformat into UNIX epoch microseconds and write that shit into an even newer variable
+
+        # print('trkpts data')
+        # print(trkpts[i])
+
+        # print('\n')
+
+        print(str(trkpts[i][7]) + ',' + str(trkpts[i][1]) + ',' + str(trkpts[i][2]) + ',' + str(trkpts[i][3]) + ',' + str(
+            trkpts[i][4]) + ',' + str(platPit) + ',' + str(platRoll) + ',' + str(sensRelRoll) + ',' + str(
+            sensRelPit) + ',' + str(sensRelAz) + ',' + str(hFOV) + ',' + str(vFOV))
+
         i = i + 1
 
+    continue
+
     i = 0
-    vidTele = [0 for z in range(len(vidFile))]
 
     # Things are getting a little crazy here getting the telemetry pared down. Basically, this code block iterates through the list of video files,
     # and runs a loop within that loop that find the index values of the trkpts list that correspond to the start and end of the video.
